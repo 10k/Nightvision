@@ -6,13 +6,16 @@ local MapMaker = Class:new()
 
 function MapMaker:create()
     local m = Map:new()
-    m:setWalkable(1, 1, false)
-    m:setWalkable(4, 5, false)
-    m:setWalkable(4, 4, false)
 
-    local player = Player:new{ x=200, y=200 }
+    for x = 2,25 do
+        for y = 2,15 do
+            m:setWalkable(x, y, true)
+        end
+    end
 
-    m:add(player)
+    m.player = Player:new{ x=200, y=200 }
+
+    m:add(m.player)
 
     return m
 end

@@ -1,7 +1,8 @@
 local Creature = require "Creature"
 local Keys = require "Keys"
+local Bullet = require "Bullet"
 
-local Player = Creature:new{walk_speed = 1, run_speed = 2}
+local Player = Creature:new{walk_speed = 3, run_speed = 6}
 
 local DiagSpeed = 0.709
 
@@ -57,8 +58,18 @@ function Player:draw(camera)
     love.graphics.circle("fill",
         self.x - camera.x,
         self.y - camera.y,
-        self.body_size / 2,
+        self.radius,
         100)
+end
+
+function Player:mousepressed(x, y, button)
+    if button == 'l' then
+        local b = Bullet:new{x=self.x, y=self.y, shooter=self}
+        b:fire_at(x, y, 5)
+        self.map:add(b)
+    elseif button == 'r' then
+
+    end
 end
 
 return Player

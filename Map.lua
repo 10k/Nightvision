@@ -13,8 +13,6 @@ function Map:init(o)
         self.updateables = {}
     end
 
-    self:add(self)
-
     return o
 end
 
@@ -42,9 +40,9 @@ end
 
 function Map:walkableTile(x, y)
     if self._walkable[x] == nil or self._walkable[x][y] == nil then
-        return true
+        return false
     end
-    return self._walkable[o]
+    return self._walkable[x][y]
 end
 
 function Map:setWalkable(x, y, walk)
@@ -54,11 +52,23 @@ function Map:setWalkable(x, y, walk)
     self._walkable[x][y] = walk
 end
 
+function Map:update()
+    for k,_ in pairs(self.updateables) do
+        k:update()
+    end
+end
+
 function Map:draw(camera)
-    love.graphics.setColor(200, 200, 200)
-    for x,sub in pairs(self._walkable) do
-        for y,walkable in pairs(sub) do
-            if not walkable then
+    love.graphics.setColor(0, 0, 0)
+
+    local min_x = math.floor(camera.x / self.tile_size)
+    local min_y = math.floor(camera.y / self.tile_size)
+    local max_x = min_x + math.ceil(love.graphics.getWidth() / self.tile_size)
+    local max_y = min_y + math.ceil(love.graphics.getHeight() / self.tile_size)
+
+    for x = min_x, max_x do
+        for y = min_y, max_y do
+            if self:walkableTile(x, y) then
                 love.graphics.rectangle("fill",
                     (x * self.tile_size) - camera.x,
                     (y * self.tile_size) - camera.y,
@@ -66,6 +76,10 @@ function Map:draw(camera)
                     self.tile_size)
             end
         end
+    end
+
+    for k,_ in pairs(self.drawables) do
+        k:draw(camera)
     end
 end
 

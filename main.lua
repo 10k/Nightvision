@@ -1,10 +1,16 @@
-MapMaker = require "MapMaker"
+local MapMaker = require "MapMaker"
+local Camera = require "Camera"
 
-paused = false
-map = nil
+local paused = false
+local map = nil
+local camera = nil
 
 function love.load()
     map = MapMaker:new():create()
+    camera = Camera:new()
+    map:add(camera)
+
+    love.graphics.setBackgroundColor(200, 200, 200)
 end
 
 function love.update()
@@ -12,19 +18,15 @@ function love.update()
         return
     end
 
-    for k,_ in pairs(map.updateables) do
-        k:update()
-    end
+    map:update()
 end
 
 function love.draw()
-    for k,_ in pairs(map.drawables) do
-        k:draw({x = 0, y = 0})
-    end
+    map:draw(camera)
 end
 
 function love.mousepressed(x, y, button)
-    -- throw a coin
+    map.player:mousepressed(x + camera.x, y + camera.y, button)
 end
 
 function love.keypressed(key)
