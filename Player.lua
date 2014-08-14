@@ -1,4 +1,5 @@
 local Creature = require "Creature"
+local Keys = require "Keys"
 
 local Player = Creature:new{walk_speed = 1, run_speed = 2}
 
@@ -6,13 +7,13 @@ local DiagSpeed = 0.709
 
 function Player:update()
     speed = self.walk_speed
-    if love.keyboard.isDown("lshift") then
+    if love.keyboard.isDown(Keys.run) then
         speed = self.run_speed
     end
 
     keys = {}
     for _,k in pairs({"up", "down", "left", "right"}) do
-        if love.keyboard.isDown(k) then
+        if love.keyboard.isDown(Keys[k]) then
             keys[k] = 1
         else
             keys[k] = 0
@@ -48,13 +49,16 @@ function Player:update()
         end
     end
 
-    self.y = self.y + ymov
-    self.x = self.x + xmov
+    self:move(xmov, ymov)
 end
 
 function Player:draw(camera)
     love.graphics.setColor(255, 255, 255)
-    love.graphics.circle("fill", self.x - camera.x, self.y - camera.y, 10, 10)
+    love.graphics.circle("fill",
+        self.x - camera.x,
+        self.y - camera.y,
+        self.body_size / 2,
+        100)
 end
 
 return Player
