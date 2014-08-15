@@ -1,8 +1,9 @@
 local Class = require "Class"
 local Map = require "Map"
 local Player = require "Player"
+local Enemy = require "Enemy"
 
-local MapMaker = Class:new()
+local MapMaker = Class:extend("MapMaker")
 
 function MapMaker:create()
     local m = Map:new()
@@ -16,6 +17,8 @@ function MapMaker:create()
     m.player = Player:new{ x=200, y=200 }
 
     m:add(m.player)
+
+    m:add(Enemy:new{x=400, y=400})
 
     return m
 end

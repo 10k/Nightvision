@@ -2,11 +2,13 @@ local Creature = require "Creature"
 local Keys = require "Keys"
 local Bullet = require "Bullet"
 
-local Player = Creature:new{walk_speed = 3, run_speed = 6}
+local Player = Creature:extend("Player", {walk_speed = 3, run_speed = 6})
 
 local DiagSpeed = 0.709
 
 function Player:update()
+    Creature.update(self)
+
     speed = self.walk_speed
     if love.keyboard.isDown(Keys.run) then
         speed = self.run_speed
@@ -54,7 +56,11 @@ function Player:update()
 end
 
 function Player:draw(camera)
-    love.graphics.setColor(255, 255, 255)
+    if self.invincibility_frames > 0 then
+        love.graphics.setColor(0, 0, 255)
+    else
+        love.graphics.setColor(255, 255, 255)
+    end
     love.graphics.circle("fill",
         self.x - camera.x,
         self.y - camera.y,

@@ -1,6 +1,6 @@
 local Class = require "Class"
 
-local Map = Class:new{tile_size = 30}
+local Map = Class:extend("Map", {tile_size = 30})
 
 function Map:init(o)
     if not self._walkable then
@@ -11,6 +11,9 @@ function Map:init(o)
     end
     if not self.updateables then
         self.updateables = {}
+    end
+    if not self.collidables then
+        self.collidables = {}
     end
 
     return o
@@ -24,12 +27,22 @@ function Map:add(o)
     if o.draw ~= nil then
         self.drawables[o] = true
     end
+    if o.collide_with ~= nil then
+        table.insert(self.collidables, o)
+    end
 end
 
 function Map:remove(o)
     o.map = nil
     self.updateables[o] = nil
     self.drawables[o] = nil
+    if o.collide_with ~= nil then
+        for i = 1,table.getn(self.collidables) do
+            if self.collidables[i] == o then
+                table.remove(self.collidables, i)
+            end
+        end
+    end
 end
 
 function Map:walkable(x, y)
@@ -55,6 +68,25 @@ end
 function Map:update()
     for k,_ in pairs(self.updateables) do
         k:update()
+    end
+
+    -- clone in case something is removed
+    local cc = {}
+    for k,v in pairs(self.collidables) do
+        cc[k] = v
+    end
+
+    for i = 1,table.getn(cc) do
+        for j = i+1, table.getn(cc) do
+            local a = cc[i]
+            local b = cc[j]
+
+            local dist = math.sqrt(math.pow(a.x - b.x, 2) + math.pow(a.y - b.y, 2))
+            if dist < a.radius + b.radius then
+                a:collide_with(b)
+                b:collide_with(a)
+            end
+        end
     end
 end
 
