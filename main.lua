@@ -1,5 +1,6 @@
 local MapMaker = require "MapMaker"
 local Camera = require "Camera"
+local Gui = require "Gui"
 
 local paused = false
 local map = nil
@@ -9,6 +10,7 @@ function love.load()
     map = MapMaker:new():create()
     camera = Camera:new()
     map:add(camera)
+    map:add(Gui:new())
 
     love.graphics.setBackgroundColor(200, 200, 200)
 end
