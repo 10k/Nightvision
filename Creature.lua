@@ -62,6 +62,7 @@ function Creature:take_damage(dmg)
 end
 
 function Creature:die()
+    self.dead = true
     self.map:remove(self)
 end
 
