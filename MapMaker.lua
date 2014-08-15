@@ -19,6 +19,8 @@ function MapMaker:create()
     m:add(m.player)
 
     m:add(Enemy:new{x=400, y=400})
+    m:add(Enemy:new{x=600, y=400})
+    m:add(Enemy:new{x=600, y=200})
 
     return m
 end

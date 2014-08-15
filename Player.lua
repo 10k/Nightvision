@@ -2,7 +2,7 @@ local Creature = require "Creature"
 local Keys = require "Keys"
 local Bullet = require "Bullet"
 
-local Player = Creature:extend("Player", {walk_speed = 3, run_speed = 6})
+local Player = Creature:extend("Player", {walk_speed = 3, run_speed = 6, health = 10})
 
 local DiagSpeed = 0.709
 
@@ -56,16 +56,14 @@ function Player:update()
 end
 
 function Player:draw(camera)
-    if self.invincibility_frames > 0 then
-        love.graphics.setColor(0, 0, 255)
-    else
+    if self.invincibility_frames % 6 < 3 then
         love.graphics.setColor(255, 255, 255)
+        love.graphics.circle("fill",
+            self.x - camera.x,
+            self.y - camera.y,
+            self.radius,
+            100)
     end
-    love.graphics.circle("fill",
-        self.x - camera.x,
-        self.y - camera.y,
-        self.radius,
-        100)
 end
 
 function Player:mousepressed(x, y, button)
