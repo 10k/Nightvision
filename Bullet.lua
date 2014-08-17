@@ -6,7 +6,8 @@ local Bullet = Class:extend("Bullet", {
     xspeed = 0,
     yspeed = 0,
     damage = 1,
-    radius = 2
+    radius = 6,
+    color = {red = 255, green = 0, blue = 255}
 })
 
 -- set the velocity so the bullet flies towards the given target
@@ -29,7 +30,7 @@ function Bullet:update()
 end
 
 function Bullet:draw(camera)
-    love.graphics.setColor(255, 0, 255)
+    love.graphics.setColor(self.color.red, self.color.green, self.color.blue)
     love.graphics.circle("fill",
         self.x - camera.x,
         self.y - camera.y,

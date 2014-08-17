@@ -1,15 +1,20 @@
 local MapMaker = require "MapMaker"
 local Camera = require "Camera"
 local Gui = require "Gui"
+local Player = require "Player"
 
 local paused = false
 local map = nil
-local camera = nil
 
 function love.load()
     map = MapMaker:new():create()
-    camera = Camera:new()
-    map:add(camera)
+
+    map.player = Player:new{ x=200, y=200 }
+    map:add(map.player)
+
+    map.camera = Camera:new()
+    map:add(map.camera)
+
     map:add(Gui:new())
 
     love.graphics.setBackgroundColor(200, 200, 200)
@@ -24,11 +29,11 @@ function love.update()
 end
 
 function love.draw()
-    map:draw(camera)
+    map:draw(map.camera)
 end
 
 function love.mousepressed(x, y, button)
-    map.player:mousepressed(x + camera.x, y + camera.y, button)
+    map.player:mousepressed(x + map.camera.x, y + map.camera.y, button)
 end
 
 function love.keypressed(key)

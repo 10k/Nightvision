@@ -68,7 +68,12 @@ end
 
 function Player:mousepressed(x, y, button)
     if button == 'l' then
-        local b = Bullet:new{x=self.x, y=self.y, shooter=self}
+        local b = Bullet:new{
+            x=self.x,
+            y=self.y,
+            shooter=self,
+            color={red=255,green=255,blue=0}
+        }
         b:fire_at(x, y, 5)
         self.map:add(b)
     elseif button == 'r' then
