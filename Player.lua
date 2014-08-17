@@ -1,18 +1,34 @@
 local Creature = require "Creature"
 local Keys = require "Keys"
+local Weapon = require "Weapon"
 local Bullet = require "Bullet"
 
-local Player = Creature:extend("Player", {walk_speed = 3, run_speed = 6, health = 10})
+local Player = Creature:extend("Player", {
+    speed = 3,
+    health = 10,
+    color = {red = 255, green = 255, blue = 255},
+    invincibility_frames = 48
+})
 
 local DiagSpeed = 0.709
 
+function Player:init()
+    Creature.init(self)
+
+    local w = Weapon:new{
+        parent = self,
+        reload_rate = 10,
+        bullet_class = Bullet:new{
+            speed = 6,
+            color = {red = 255, green = 255, blue = 0}
+        }
+    }
+
+    table.insert(self.weapons, w)
+end
+
 function Player:update()
     Creature.update(self)
-
-    speed = self.walk_speed
-    if love.keyboard.isDown(Keys.run) then
-        speed = self.run_speed
-    end
 
     keys = {}
     for _,k in pairs({"up", "down", "left", "right"}) do
@@ -27,55 +43,39 @@ function Player:update()
     ymov = 0
     if keys["up"] == 1 and keys["down"] == 0 then
         if keys["left"] + keys["right"] == 1 then
-            ymov = -(speed * DiagSpeed)
+            ymov = -(self.speed * DiagSpeed)
         else
-            ymov = -speed
+            ymov = -self.speed
         end
     elseif keys["down"] == 1 and keys["up"] == 0 then
         if keys["left"] + keys["right"] == 1 then
-            ymov = (speed * DiagSpeed)
+            ymov = (self.speed * DiagSpeed)
         else
-            ymov = speed
+            ymov = self.speed
         end
     end
     if keys["left"] == 1 and keys["right"] == 0 then
         if keys["up"] + keys["down"] == 1 then
-            xmov = -(speed * DiagSpeed)
+            xmov = -(self.speed * DiagSpeed)
         else
-            xmov = -speed
+            xmov = -self.speed
         end
     elseif keys["right"] == 1 and keys["left"] == 0 then
         if keys["up"] + keys["down"] == 1 then
-            xmov = speed * DiagSpeed
+            xmov = self.speed * DiagSpeed
         else
-            xmov = speed
+            xmov = self.speed
         end
     end
 
     self:move(xmov, ymov)
 end
 
-function Player:draw(camera)
-    if self.invincibility_frames % 6 < 3 then
-        love.graphics.setColor(255, 255, 255)
-        love.graphics.circle("fill",
-            self.x - camera.x,
-            self.y - camera.y,
-            self.radius,
-            100)
-    end
-end
-
 function Player:mousepressed(x, y, button)
     if button == 'l' then
-        local b = Bullet:new{
-            x=self.x,
-            y=self.y,
-            shooter=self,
-            color={red=255,green=255,blue=0}
-        }
-        b:fire_at(x, y, 5)
-        self.map:add(b)
+        for _,weapon in pairs(self.weapons) do
+            weapon:fire_at(x, y)
+        end
     elseif button == 'r' then
 
     end

@@ -7,17 +7,18 @@ local Bullet = Class:extend("Bullet", {
     yspeed = 0,
     damage = 1,
     radius = 6,
-    color = {red = 255, green = 0, blue = 255}
+    color = {red = 255, green = 0, blue = 255},
+    speed = 3
 })
 
 -- set the velocity so the bullet flies towards the given target
-function Bullet:fire_at(x, y, speed)
+function Bullet:fire_at(x, y)
     local xdiff = x - self.x
     local ydiff = y - self.y
     local len = math.sqrt(xdiff * xdiff + ydiff * ydiff)
 
-    self.xspeed = (xdiff / len) * speed
-    self.yspeed = (ydiff / len) * speed
+    self.xspeed = (xdiff / len) * self.speed
+    self.yspeed = (ydiff / len) * self.speed
 end
 
 function Bullet:update()

@@ -5,12 +5,18 @@ local Creature = Class:extend("Creature", {
     y = 1,
     radius = 10,
     health = 3,
-    invincibility_frames = 0
+    invincibility_frames = 24,
+    invincibility_remaining = 0,
+    color = {red = 255, green = 0, blue = 0}
 })
 
+function Creature:init()
+    self.weapons = {}
+end
+
 function Creature:draw(camera)
-    if self.invincibility_frames % 6 < 3 then
-        love.graphics.setColor(255, 0, 0)
+    if self.invincibility_remaining % 6 < 3 then
+        love.graphics.setColor(self.color.red, self.color.green, self.color.blue)
         love.graphics.circle("fill",
             self.x - camera.x,
             self.y - camera.y,
@@ -21,8 +27,12 @@ function Creature:draw(camera)
 end
 
 function Creature:update()
-    if self.invincibility_frames > 0 then
-        self.invincibility_frames = self.invincibility_frames - 1
+    if self.invincibility_remaining > 0 then
+        self.invincibility_remaining = self.invincibility_remaining - 1
+    end
+
+    for _,weapon in pairs(self.weapons) do
+        weapon:update()
     end
 end
 
@@ -49,11 +59,11 @@ function Creature:collide_with(o)
 end
 
 function Creature:take_damage(dmg)
-    if self.invincibility_frames > 0 then
+    if self.invincibility_remaining > 0 then
         return
     end
     self.health = self.health - dmg
-    self.invincibility_frames = 24
+    self.invincibility_remaining = self.invincibility_frames
     if self.health < 1 then
         self:die()
     end
