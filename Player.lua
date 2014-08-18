@@ -2,10 +2,11 @@ local Creature = require "Creature"
 local Keys = require "Keys"
 local Weapon = require "Weapon"
 local Bullet = require "Bullet"
+local Grenade = require "Grenade"
 
 local Player = Creature:extend("Player", {
     speed = 3,
-    health = 10,
+    max_health = 10,
     color = {red = 255, green = 255, blue = 255},
     invincibility_frames = 48
 })
@@ -21,6 +22,17 @@ function Player:init()
         bullet_class = Bullet:new{
             speed = 6,
             color = {red = 255, green = 255, blue = 0}
+        }
+    }
+
+    table.insert(self.weapons, w)
+
+    w = Weapon:new{
+        parent = self,
+        reload_rate = 100,
+        max_ammo = 10,
+        bullet_class = Grenade:new{
+            speed = 4
         }
     }
 
@@ -73,11 +85,16 @@ end
 
 function Player:mousepressed(x, y, button)
     if button == 'l' then
-        for _,weapon in pairs(self.weapons) do
-            weapon:fire_at(x, y)
-        end
+        self.weapons[1]:fire_at(x, y)
     elseif button == 'r' then
+        self.weapons[2]:fire_at(x, y)
+    end
+end
 
+function Player:heal(healing)
+    Creature.heal(self, healing)
+    if self.health > self.max_health then
+        self.health = self.max_health
     end
 end
 

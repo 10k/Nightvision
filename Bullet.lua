@@ -26,8 +26,12 @@ function Bullet:update()
     self.y = self.y + self.yspeed
 
     if not self.map:walkable(self.x, self.y) then
-        self.map:remove(self)
+        self:collide_with_wall()
     end
+end
+
+function Bullet:collide_with_wall()
+    self.map:remove(self)
 end
 
 function Bullet:draw(camera)
@@ -41,6 +45,8 @@ end
 
 function Bullet:collide_with(o)
     if o:is_a("Creature") and self.shooter ~= o then
+        self.map:remove(self)
+    elseif o:is_a("Barrel") then
         self.map:remove(self)
     end
 end
