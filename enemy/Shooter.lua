@@ -1,12 +1,13 @@
 local Creature = require "Creature"
 local Weapon = require "Weapon"
 
-local Enemy = Creature:extend("Enemy", {
+local Shooter = Creature:extend("Shooter", {
     reload_frames = 0,
-    reload_time = 100
+    reload_time = 100,
+    team = "Monster"
 })
 
-function Enemy:init()
+function Shooter:init()
     Creature.init(self)
 
     local w = Weapon:new{ parent = self }
@@ -14,7 +15,7 @@ function Enemy:init()
     table.insert(self.weapons, w)
 end
 
-function Enemy:update()
+function Shooter:update()
     Creature.update(self)
 
     for _,weapon in pairs(self.weapons) do
@@ -22,4 +23,4 @@ function Enemy:update()
     end
 end
 
-return Enemy
+return Shooter

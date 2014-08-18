@@ -26,7 +26,7 @@ function Weapon:fire_at(x, y)
     local b = self.bullet_class:new{
         x = self.parent.x,
         y = self.parent.y,
-        team = self.parent.team
+        team = self.team or self.parent.team
     }
     b:fire_at(x, y)
     self.parent.map:add(b)

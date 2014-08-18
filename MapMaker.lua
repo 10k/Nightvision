@@ -1,6 +1,7 @@
 local Class = require "Class"
 local Map = require "Map"
-local Enemy = require "enemy/Spawner"
+local Spawner = require "enemy/Spawner"
+local Shooter = require "enemy/Shooter"
 local Explosion = require "Explosion"
 local HealBarrel = require "HealBarrel"
 
@@ -15,9 +16,9 @@ function MapMaker:create()
         end
     end
 
-    m:add(Enemy:new{x=400, y=400})
-    --m:add(Enemy:new{x=600, y=400})
-    --m:add(Enemy:new{x=600, y=200})
+    m:add(Spawner:new{x=400, y=400})
+    m:add(Shooter:new{x=600, y=400})
+    m:add(Shooter:new{x=600, y=200})
     m:add(HealBarrel:new{x=600,y=175})
 
     return m
