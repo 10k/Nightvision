@@ -8,7 +8,8 @@ local Player = Creature:extend("Player", {
     speed = 3,
     max_health = 10,
     color = {red = 255, green = 255, blue = 255},
-    invincibility_frames = 48
+    invincibility_frames = 48,
+    team = "Player"
 })
 
 local DiagSpeed = 0.709

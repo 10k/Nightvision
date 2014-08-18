@@ -66,12 +66,14 @@ function Creature:move(xdiff, ydiff)
 end
 
 function Creature:collide_with(o)
-    if o:is_a("Bullet") and o.shooter ~= self then
+    if o:is_a("Bullet") and o.team ~= self.team then
         self:take_damage(o.damage)
     elseif o:is_a("HealExplosion") then
         self:heal(o.healing)
     elseif o:is_a("Explosion") then
         self:take_damage(o.damage)
+    elseif o:is_a("Creature") and o.team ~= self.team and o.touch_damage ~= nil then
+        self:take_damage(o.touch_damage)
     end
 end
 

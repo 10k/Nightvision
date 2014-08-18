@@ -1,4 +1,5 @@
 local Class = require "Class"
+local Util = require "Util"
 
 local Bullet = Class:extend("Bullet", {
     x = 0,
@@ -13,12 +14,9 @@ local Bullet = Class:extend("Bullet", {
 
 -- set the velocity so the bullet flies towards the given target
 function Bullet:fire_at(x, y)
-    local xdiff = x - self.x
-    local ydiff = y - self.y
-    local len = math.sqrt(xdiff * xdiff + ydiff * ydiff)
-
-    self.xspeed = (xdiff / len) * self.speed
-    self.yspeed = (ydiff / len) * self.speed
+    local xd, yd = Util:normalized_towards(self.x, self.y, x, y)
+    self.xspeed = xd * self.speed
+    self.yspeed = yd * self.speed
 end
 
 function Bullet:update()
@@ -44,7 +42,10 @@ function Bullet:draw(camera)
 end
 
 function Bullet:collide_with(o)
-    if o:is_a("Creature") and self.shooter ~= o then
+    if self.map == nil then
+        return
+    end
+    if o:is_a("Creature") and self.team ~= o.team then
         self.map:remove(self)
     elseif o:is_a("Barrel") then
         self.map:remove(self)

@@ -16,7 +16,9 @@ function Grenade:update()
 end
 
 function Grenade:collide_with(o)
-    if o:is_a("Creature") and o ~= self.shooter then
+    if o:is_a("Creature") and o.team ~= self.team then
+        self:explode()
+    elseif o:is_a("Barrel") then
         self:explode()
     end
 end
@@ -26,6 +28,9 @@ function Grenade:collide_with_wall()
 end
 
 function Grenade:explode()
+    if self.map == nil then
+        return
+    end
     local e = Explosion:new{ x = self.x, y = self.y }
     self.map:add(e)
     self.map:remove(self)
